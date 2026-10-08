@@ -4,7 +4,7 @@ This project implements a bank account management API using Event Sourcing and C
 
 ## Stack
 
-- Node.js + Express
+- Node.js + Express.js in backend
 - PostgreSQL 15
 - Docker + Docker Compose
 
