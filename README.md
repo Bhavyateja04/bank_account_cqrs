@@ -1,65 +1,87 @@
-# Bank Account CQRS With Event Sourcing
+# Bank Account Management API — CQRS & Event Sourcing
 
-This project implements a bank account management API using Event Sourcing and CQRS on Node.js and PostgreSQL.
+## 1. Project Overview
 
-## Stack
+A bank account management REST API built using **Node.js, Express.js, and PostgreSQL**. The application follows **Command Query Responsibility Segregation (CQRS)** and **Event Sourcing** to manage account operations, maintain transaction history, and retrieve account balances at specific points in time.
 
-- Node.js + Express.js in backend
-- PostgreSQL 15
-- Docker + Docker Compose
+## 2. Technology Stack
 
-## Features
+- **Backend:** Node.js, Express.js
+- **Database:** PostgreSQL 15
+- **Containerization:** Docker, Docker Compose
 
-- Command APIs:
-  - POST /api/accounts
-  - POST /api/accounts/{accountId}/deposit
-  - POST /api/accounts/{accountId}/withdraw
-  - POST /api/accounts/{accountId}/close
-- Query APIs:
-  - GET /api/accounts/{accountId}
-  - GET /api/accounts/{accountId}/events
-  - GET /api/accounts/{accountId}/balance-at/{timestamp}
-  - GET /api/accounts/{accountId}/transactions?page=1&pageSize=10
-- Projection administration:
-  - POST /api/projections/rebuild
-  - GET /api/projections/status
-- Snapshotting:
-  - Automatically saves snapshots every 50 events per aggregate.
+## 3. Core Features
 
-## Environment Variables
+### Account Command APIs
+- `POST /api/accounts` — Create a new bank account.
+- `POST /api/accounts/{accountId}/deposit` — Deposit money into an account.
+- `POST /api/accounts/{accountId}/withdraw` — Withdraw money from an account.
+- `POST /api/accounts/{accountId}/close` — Close a bank account.
 
-Use .env with the following values (see .env.example):
+### Account Query APIs
+- `GET /api/accounts/{accountId}` — Retrieve account details and current balance.
+- `GET /api/accounts/{accountId}/events` — Fetch the account's event history.
+- `GET /api/accounts/{accountId}/balance-at/{timestamp}` — Retrieve the account balance at a specified time.
+- `GET /api/accounts/{accountId}/transactions?page=1&pageSize=10` — Retrieve paginated transaction history.
 
-- API_PORT
-- DATABASE_URL
-- DB_USER
-- DB_PASSWORD
-- DB_NAME
+### Projection Management
+- `POST /api/projections/rebuild` — Rebuild read-model projections.
+- `GET /api/projections/status` — Check projection processing status.
 
-## Run
+### Event Sourcing and Snapshots
+- Account operations are recorded as events in the event store.
+- Account state can be reconstructed by replaying recorded events.
+- Snapshots are automatically saved after every 50 events per account aggregate to improve state reconstruction performance.
 
-1. Build and start services:
-   - docker compose up --build -d
-2. Check health:
-   - http://localhost:8080/health
-3. Run smoke test:
-   - npm run smoke:test
+## 4. Environment Configuration
 
-## NPM Scripts
+Create a `.env` file in the project root using the following variables. Refer to `.env.example` for the expected configuration.
 
-- npm run docker:up
-- npm run docker:down
-- npm run docker:reset
-- npm run smoke:test
+- `API_PORT` — Backend server port.
+- `DATABASE_URL` — PostgreSQL connection URL.
+- `DB_USER` — Database username.
+- `DB_PASSWORD` — Database password.
+- `DB_NAME` — Database name.
 
-## Database Initialization
+## 5. Installation and Execution
 
-Schemas are created on startup from:
+### Step 1: Start the application
 
-- seeds/schema.sql
+```bash
+docker compose up --build -d
+```
 
-## Submission Data
+### Step 2: Verify application health
 
-Automated evaluators use:
+Open the following endpoint in your browser or API client:
 
-- submission.json
+```text
+http://localhost:8080/health
+```
+
+### Step 3: Run the smoke test
+
+```bash
+npm run smoke:test
+```
+
+## 6. Available NPM Scripts
+
+| Command | Description |
+|---|---|
+| `npm run docker:up` | Start the Docker services. |
+| `npm run docker:down` | Stop the Docker services. |
+| `npm run docker:reset` | Reset the Docker environment. |
+| `npm run smoke:test` | Execute smoke tests against the application. |
+
+## 7. Database Initialization
+
+Database schemas are initialized automatically when the application starts. The SQL initialization script is located at:
+
+```text
+seeds/schema.sql
+```
+
+## 8. Submission Requirements
+
+The project includes a `submission.json` file used by automated evaluators. Ensure that this file contains the required submission metadata and follows the expected format.
